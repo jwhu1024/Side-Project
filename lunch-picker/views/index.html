@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>Drink-Picker</title>
+	<link rel="stylesheet" href="views/css/demo.css" type="text/css" />
+	<link rel="shortcut icon" href="http://www.miguelmota.com/favicon.ico">
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-functions.js"></script>
+	<script src="views/js/wheel.js"></script>
+</head>
+<body>
+<div class="container">
+	<header class="header"><h1>Drink-Picker</h1></header>
+	<section class="wheel-container"><canvas id="wheel-1"></canvas></section>
+	<section class="actions"><button class="btn-spin punch">Spin!</button></section>
+
+	<canvas id="wheel"></canvas>
+	<script type="text/javascript">
+	(function() {
+	
+		var COLOR_DEF = ['#ff0000', '#ff4000', '#ff8000', '#ffbf00',
+						 '#ffff00', '#bfff00', '#80ff00', '#40ff00',
+						 '#00ff00', '#00ff40', '#00ff80', '#00ffbf',
+						 '#00ffff', '#00bfff', '#0080ff', '#0040ff',
+						 '#0000ff', '#4000ff', '#8000ff', '#bf00ff',
+						 '#ff00ff', '#ff00bf', '#ff0080', '#ff0040',
+						 '#ff0000']
+	
+		firebase.initializeApp({
+			apiKey: "AIzaSyBWBPP0Qxt4epzlD4ZlkzOGU7pMC15ZnVs",
+			authDomain: "lunch-picker-3066c.firebaseapp.com",
+			databaseURL: "https://lunch-picker-3066c.firebaseio.com",
+			projectId: "lunch-picker-3066c",
+			storageBucket: "lunch-picker-3066c.appspot.com",
+			messagingSenderId: "557419931185"
+		});
+		
+		firebase.database().ref('/lunch/').once('value').then(function(list) {
+			var mylist = list.val();
+			var list_array = [];
+			var color_list = [];
+			var i, len = mylist.length;
+		
+			for (i = 0; i < len; i++) {
+				if (mylist[i] != undefined) {
+					list_array.push(mylist[i]);
+				}
+			}
+			
+			for (i = 0; i < len; i++) {
+				color_list.push(COLOR_DEF[i]);
+			}
+			
+			var settings = [{
+				el: 'wheel-1',
+				members: list_array,
+				colors: color_list,
+				radius: 250,
+				startAngle: 'random'
+			}];
+
+			var wheels = [new Wheel(settings[0])];
+			wheels.forEach(function(wheel) {
+				wheel.init();
+			});
+
+			var spinBtn = document.querySelector('.btn-spin');
+			spinBtn.addEventListener('click', function(e) {
+				wheels.forEach(function(wheel) {
+					wheel.spin(function(member) {
+						alert(member);
+					});
+				}, false);
+			});
+		});		
+	})();
+</script>
+</div>
+</body>
+</html>
