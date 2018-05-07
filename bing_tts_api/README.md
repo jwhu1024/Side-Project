@@ -1,5 +1,5 @@
 # bing TTS REST api                                                                                                                                                    
-# Before complile
+# Before compile
 ```
 change the api key in bing_tts.c
 static const char *azure_api_key_1     = "";    // put your api key1 here
